@@ -1,3 +1,3 @@
 export default function NoteForm() {
-  return <div>NoteForm</div>;
+  return null;
 }
