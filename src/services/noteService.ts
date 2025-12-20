@@ -21,6 +21,11 @@ export const fetchNotes = async (page: number, search: string) => {
   return data;
 };
 
+export const deleteNote = async (id: string) => {
+  const { data } = await api.delete(`/notes/${id}`);
+  return data;
+};
+
 
 
 
