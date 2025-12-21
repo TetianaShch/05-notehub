@@ -6,6 +6,7 @@ import css from "./NoteForm.module.css";
 
 interface NoteFormProps {
   onCancel: () => void;
+  onSubmit: (values: { title: string; content: string; tag: string }) => void;
 }
 
 const initialValues = {
@@ -22,13 +23,13 @@ const validationSchema = Yup.object({
     .required("Tag is required"),
 });
 
-export default function NoteForm({ onCancel }: NoteFormProps) {
+export default function NoteForm({ onCancel, onSubmit }: NoteFormProps) {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log(values);
+        onSubmit(values);
       }}
     >
       {({ isValid, dirty }) => (

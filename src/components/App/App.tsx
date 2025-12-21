@@ -7,6 +7,7 @@ import SearchBox from "../SearchBox/SearchBox";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "../../services/noteService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNote } from "../../services/noteService";
 import { deleteNote } from "../../services/noteService";
 import { useState } from "react";
 
@@ -20,6 +21,14 @@ export default function App() {
 
   const notes = data?.notes ?? data ?? [];
   const queryClient = useQueryClient();
+
+  const createNoteMutation = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      closeModal();
+    },
+  });
 
   const deleteMutation = useMutation({
     mutationFn: deleteNote,
@@ -49,7 +58,10 @@ export default function App() {
       <Pagination />
       {isModalOpen && (
         <Modal onClose={closeModal}>
-          <NoteForm onCancel={closeModal} />
+          <NoteForm
+            onCancel={closeModal}
+            onSubmit={(values) => createNoteMutation.mutate(values)}
+          />
         </Modal>
       )}
     </div>
