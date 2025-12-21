@@ -11,6 +11,7 @@ export const api = axios.create({
 });
 export interface FetchNotesParams {
   page?: number;
+  perPage?: number;
   search?: string;
 }
 
@@ -35,10 +36,11 @@ export interface FetchNotesResponse {
 // api.get("/notes");
 export const fetchNotes = async ({
   page = 1,
+  perPage = 10,
   search = "",
 }: FetchNotesParams): Promise<FetchNotesResponse> => {
   const { data } = await api.get<FetchNotesResponse>("/notes", {
-    params: { page, search },
+    params: { page, perPage, search },
   });
 
   return data;

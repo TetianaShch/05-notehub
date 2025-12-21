@@ -18,12 +18,15 @@ export default function App() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const PER_PAGE = 10;
+
   const { data } = useQuery({
     queryKey: ["notes", page, search],
-    queryFn: () => fetchNotes({ page, search }),
+    queryFn: () => fetchNotes({ page, perPage: PER_PAGE, search }),
   });
 
   const notes = data?.notes ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   const createNoteMutation = useMutation({
     mutationFn: createNote,
@@ -54,6 +57,14 @@ export default function App() {
           }}
         />
 
+        {totalPages > 1 && (
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
+
         <button type="button" className={css.button} onClick={openModal}>
           Create note +
         </button>
@@ -63,7 +74,6 @@ export default function App() {
         <NoteList notes={notes} onDelete={(id) => deleteMutation.mutate(id)} />
       )}
 
-      <Pagination />
       {isModalOpen && (
         <Modal onClose={closeModal}>
           <NoteForm
