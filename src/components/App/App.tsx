@@ -9,6 +9,7 @@ import { fetchNotes } from "../../services/noteService";
 import { createNote } from "../../services/noteService";
 import { deleteNote } from "../../services/noteService";
 import { useState } from "react";
+import { useDebounce } from "use-debounce";
 
 import css from "./App.module.css";
 
@@ -17,12 +18,18 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [debouncedSearch] = useDebounce(search, 500);
 
   const PER_PAGE = 10;
 
   const { data } = useQuery({
-    queryKey: ["notes", page, search],
-    queryFn: () => fetchNotes({ page, perPage: PER_PAGE, search }),
+    queryKey: ["notes", page, debouncedSearch],
+    queryFn: () =>
+      fetchNotes({
+        page,
+        perPage: PER_PAGE,
+        search: debouncedSearch,
+      }),
   });
 
   const notes = data?.notes ?? [];
