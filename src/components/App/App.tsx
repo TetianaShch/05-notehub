@@ -7,7 +7,6 @@ import SearchBox from "../SearchBox/SearchBox";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes } from "../../services/noteService";
-import { createNote } from "../../services/noteService";
 import { deleteNote } from "../../services/noteService";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -36,14 +35,6 @@ export default function App() {
 
   const notes = data?.notes ?? [];
   const totalPages = data?.totalPages ?? 1;
-
-  const createNoteMutation = useMutation({
-    mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      closeModal();
-    },
-  });
 
   const deleteMutation = useMutation({
     mutationFn: deleteNote,
@@ -85,10 +76,7 @@ export default function App() {
 
       {isModalOpen && (
         <Modal onClose={closeModal}>
-          <NoteForm
-            onCancel={closeModal}
-            onSubmit={(values) => createNoteMutation.mutate(values)}
-          />
+          <NoteForm onCancel={closeModal} />
         </Modal>
       )}
     </div>
