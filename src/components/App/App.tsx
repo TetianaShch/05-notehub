@@ -4,17 +4,15 @@ import NoteList from "../NoteList/NoteList";
 import Pagination from "../Pagination/Pagination";
 import SearchBox from "../SearchBox/SearchBox";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes } from "../../services/noteService";
-import { deleteNote } from "../../services/noteService";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import css from "./App.module.css";
 
 export default function App() {
-  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,13 +33,6 @@ export default function App() {
 
   const notes = data?.notes ?? [];
   const totalPages = data?.totalPages ?? 1;
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
-  });
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -70,9 +61,7 @@ export default function App() {
         </button>
       </div>
 
-      {notes.length > 0 && (
-        <NoteList notes={notes} onDelete={(id) => deleteMutation.mutate(id)} />
-      )}
+      {notes.length > 0 && <NoteList notes={notes} />}
 
       {isModalOpen && (
         <Modal onClose={closeModal}>
