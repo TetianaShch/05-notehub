@@ -24,7 +24,7 @@ interface CreateNotePayload {
 export const createNote = async (
   payload: CreateNotePayload
 ): Promise<Note> => {
-  const { data } = await api.post("/notes", payload);
+  const { data } = await api.post<Note>("/notes", payload);
   return data;
 };
 
@@ -47,8 +47,8 @@ export const fetchNotes = async ({
 };
 
 
-export const deleteNote = async (id: string) => {
-  const { data } = await api.delete(`/notes/${id}`);
+export const deleteNote = async (id: string): Promise<Note> => {
+  const { data } = await api.delete<Note>(`/notes/${id}`);
   return data;
 };
 
