@@ -5,6 +5,7 @@ import Pagination from "../Pagination/Pagination";
 import SearchBox from "../SearchBox/SearchBox";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes } from "../../services/noteService";
 import { createNote } from "../../services/noteService";
 import { deleteNote } from "../../services/noteService";
@@ -18,7 +19,7 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [debouncedSearch] = useDebounce(search, 500);
+  const [debouncedSearch] = useDebounce(search, 1000);
 
   const PER_PAGE = 10;
 
@@ -30,6 +31,7 @@ export default function App() {
         perPage: PER_PAGE,
         search: debouncedSearch,
       }),
+    placeholderData: keepPreviousData,
   });
 
   const notes = data?.notes ?? [];
