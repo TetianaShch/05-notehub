@@ -9,7 +9,8 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes } from "../../services/noteService";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
-
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import css from "./App.module.css";
 
 export default function App() {
@@ -20,7 +21,7 @@ export default function App() {
 
   const PER_PAGE = 10;
 
-  const { data } = useQuery({
+  const { data, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () =>
       fetchNotes({
@@ -60,6 +61,15 @@ export default function App() {
           Create note +
         </button>
       </div>
+
+      {isLoading && <Loader />}
+      {isFetching && !isLoading && <Loader />}
+
+      {isError && (
+        <ErrorMessage
+          message={error instanceof Error ? error.message : "Request failed"}
+        />
+      )}
 
       {notes.length > 0 && <NoteList notes={notes} />}
 
